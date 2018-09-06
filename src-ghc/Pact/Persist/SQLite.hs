@@ -175,8 +175,13 @@ readData' t k e = do
     [] -> return Nothing
     _ -> expectSing "row" r >>= expectSing "column" >>= (fmap Just . decodeBlob)
 
-writeData' :: ToJSON v => Table k -> WriteType -> k -> v -> SQLite -> IO ()
+writeData' :: (ToJSON v, Show v, Show k) => Table k -> WriteType -> k -> v -> SQLite -> IO ()
 writeData' t wt k v e = do
+  putStrLn  $ "Pact.Persist.Sqlite.writeData'"
+            ++ "\n\t WriteType: " ++ show wt
+            ++ "\n\t Table: " ++ show t
+            ++ "\n\t key: " ++ show k
+            ++ "\n\t value: " ++ show v
   let ws = case wt of
         Write -> sInsertReplace
         Insert -> sInsert
