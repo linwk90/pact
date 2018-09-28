@@ -13,6 +13,11 @@
    (write bench-accounts address
          { "balance": 0.0, "amount": 0.0, "data": "Created account" }))
 
+ (defun create-account2 (address)
+   ; write instead of insert here to make mocking easier
+   (insert bench-accounts address
+         { "balance": 0.0, "amount": 0.0, "data": "Created account" }))
+
  (defun transfer (src dest amount)
    "transfer AMOUNT from SRC to DEST"
   (with-read bench-accounts src { "balance":= src-balance }
@@ -27,7 +32,7 @@
 
  (defun read-account (id)
    "Read data for account ID"
-   (read bench-accounts id 'balance 'amount 'data))
+   (read bench-accounts id ['balance 'amount 'data]))
 
  (defun check-balance (balance amount)
    (enforce (<= amount balance) "Insufficient funds"))
@@ -41,7 +46,10 @@
    { "Acct1": (read-account "Acct1")
    , "Acct2": (read-account "Acct2")})
 
- (defun bench () (transfer "Acct1" "Acct2" 1.0))
+  (defun read-alls () (keys bench-accounts))
+
+ (defpact bench () (step (create-account2 (format "{}" [(pact-id)]))))
+
 
  (defun upd (a) (update bench-accounts "Acct1"
             { "balance": 1000.0, "amount": 1000.0
