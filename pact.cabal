@@ -185,8 +185,6 @@ library
       , yaml
       , servant
       , servant-client
-      , wai
-      , warp
 
   if !impl(ghcjs) && !os(windows)
     build-depends: unix
@@ -267,6 +265,8 @@ test-suite hspec
       , http-client
       , wreq
       , snap-server
+      , servant-client
+      , servant
     other-modules:
         DocgenSpec
       , PactTestsSpec
@@ -283,3 +283,4 @@ test-suite hspec
       , Analyze.Gen
       , Analyze.TimeGen
       , Analyze.Translate
+      , ClientSpec

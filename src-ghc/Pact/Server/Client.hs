@@ -23,8 +23,8 @@ import Data.Text (Text)
 
 type PactServerAPI =
        "api" :> "v1" :>
-      (    "send" :> ReqBody '[JSON] SubmitBatch :> Post '[JSON] RequestKeys
-      :<|> "private" :> ReqBody '[JSON] SubmitBatch :> Post '[JSON] RequestKeys
+      (    "send" :> ReqBody '[JSON] SubmitBatch :> Post '[JSON] (ApiResponse RequestKeys)
+      :<|> "private" :> ReqBody '[JSON] SubmitBatch :> Post '[JSON] (ApiResponse RequestKeys)
       :<|> "poll" :> ReqBody '[JSON] Poll :> Post '[JSON] PollResponses
       :<|> "listen" :> ReqBody '[JSON] ListenerRequest :> Post '[JSON] ApiResult
       :<|> "local" :> ReqBody '[JSON] (Command Text) :> Post '[JSON] Value
@@ -34,8 +34,8 @@ type PactServerAPI =
 pactServerAPI :: Proxy PactServerAPI
 pactServerAPI = Proxy
 
-send :: SubmitBatch -> ClientM RequestKeys
-private :: SubmitBatch -> ClientM RequestKeys
+send :: SubmitBatch -> ClientM (ApiResponse RequestKeys)
+private :: SubmitBatch -> ClientM (ApiResponse RequestKeys)
 poll :: Poll -> ClientM PollResponses
 listen :: ListenerRequest -> ClientM ApiResult
 local :: Command Text -> ClientM Value
