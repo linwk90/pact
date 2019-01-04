@@ -13,6 +13,7 @@ import Pact.Types.Command
 import Data.Text (Text)
 import Pact.Server.Client
 import Servant.Client
+import qualified Data.HashMap.Strict as HM
 
 _testLogDir, _testConfigFilePath, _testPort, _serverPath :: String
 _testLogDir = testDir ++ "test-log/"
@@ -44,3 +45,11 @@ spec = around_ bracket $ describe "tests Servant API client" $ do
     cmd <- simpleServerCmd
     res <- runClientM (private (SubmitBatch [cmd])) clientEnv
     res `shouldBe` (Right (ApiFailure "Send private: payload must have address"))
+  it "correctly runs a simple command publicly and polls the result" $ do
+    cmd <- simpleServerCmd
+    res <- runClientM (send (SubmitBatch [cmd])) clientEnv
+    let rk = cmdToRequestKey cmd
+    res `shouldBe` (Right (ApiSuccess (RequestKeys [rk])))
+    res' <- runClientM (poll (Poll [rk])) clientEnv
+    let cmdData = (toJSON . CommandSuccess . Number) 3
+    res' `shouldBe` (Right (ApiSuccess (PollResponses (HM.singleton rk (ApiResult cmdData (Just 0) Nothing)))))

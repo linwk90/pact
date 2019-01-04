@@ -25,7 +25,7 @@ type PactServerAPI =
        "api" :> "v1" :>
       (    "send" :> ReqBody '[JSON] SubmitBatch :> Post '[JSON] (ApiResponse RequestKeys)
       :<|> "private" :> ReqBody '[JSON] SubmitBatch :> Post '[JSON] (ApiResponse RequestKeys)
-      :<|> "poll" :> ReqBody '[JSON] Poll :> Post '[JSON] PollResponses
+      :<|> "poll" :> ReqBody '[JSON] Poll :> Post '[JSON] (ApiResponse PollResponses)
       :<|> "listen" :> ReqBody '[JSON] ListenerRequest :> Post '[JSON] ApiResult
       :<|> "local" :> ReqBody '[JSON] (Command Text) :> Post '[JSON] Value
       )
@@ -36,7 +36,7 @@ pactServerAPI = Proxy
 
 send :: SubmitBatch -> ClientM (ApiResponse RequestKeys)
 private :: SubmitBatch -> ClientM (ApiResponse RequestKeys)
-poll :: Poll -> ClientM PollResponses
+poll :: Poll -> ClientM (ApiResponse PollResponses)
 listen :: ListenerRequest -> ClientM ApiResult
 local :: Command Text -> ClientM Value
 verify :: Value -> ClientM Value
